@@ -112,6 +112,11 @@ def getAccuracy(test_data,predictions):
     return (correct/float(len(test_data)))*100.0     # return percentage accuracy   
 
 
+def generatePredictions(training_data,test_data,predictions,k):
+    for x in range(len(test_data)):                       
+        neighbours = getNeighbours(training_data, test_data[x],k)
+        prediction = getResponseVotes(neighbours)
+        predictions.append(prediction)    
             
 
 def main():
@@ -130,30 +135,22 @@ def main():
     load data set and create training and test data
     '''
     loadDataset(filename,split_ratio,training_data,test_data)
-
-    print("Training data is:\n"  + '\n'.join(str(x) for x in training_data))
-    print("\n\nTest data is:\n"  + '\n'.join(str(x) for x in test_data))
+    print('Split %d rows into train = %d and test = %d rows.'%(len(training_data+test_data),len(training_data),len(test_data)))
+    
 
 
     '''
     generate predictions for each test_data instance and store them in the list, predictions.
     '''
     predictions = []    
-
-    for x in range(len(test_data)):                       
-        neighbours = getNeighbours(training_data, test_data[x],k)
-        prediction = getResponseVotes(neighbours)
-        predictions.append(prediction)
-
+    generatePredictions(training_data,test_data,predictions,k)
+    
     '''
     determine model accuracy by comparing predictions with the actual test_data
     '''
     modelAccuracy = getAccuracy(test_data,predictions)
+    print("Accuracy:%0.1f"%(modelAccuracy)+"%")
 
-
-    print("The kNN model predicted correct iris-types with accuracy:%0.3f"%(modelAccuracy))
-
-    return 
 
 
 
